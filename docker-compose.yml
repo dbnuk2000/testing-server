@@ -1,0 +1,51 @@
+# docker-compose.yaml
+version: '3.8'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080
+      - 50000:50000
+    container_name: jenkins
+    volumes:
+      - /home/daniel/jenkins_compose/jenkins_configuration:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+  agent:
+    image: jenkins/ssh-agent:jdk11
+    privileged: true
+    user: root
+    container_name: agent
+    expose:
+      - 22
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCZZGmWB/WQCMjYYYHHuGXZz188H+vEj4Z/CFfOKksC7vdnb4ZhWpeL/HqT4plSora5w0LFrNNAhJ1mBIbkGSxet4/mvg86fHYO3chcgpzSTAUoKTrmFdcgQW4x+bjg1vj4zzto+zr0ZEhAicOTrH+epCQzBIvjEX6HquZPpM8WqaDqNTFAkgg5vRNq8uHpYSXdt69uqjdNeHgVZoi1o+wyVAa/4TtfywMoby3gczmN+lcNNVqcJVh9YmIcSzwEcGtscKU67/uqVhAq+eW6X+vEi4tzWGoaTpHYnrXBbKEbXRy4Q1ljTiUKUgKm721FAjVT06RS51OJ+GGrGbFyOLVe4z7FIfuKvlaPPGoBer7i1pW/0iJNPRXNZyxMlg3e+z8EEOUvG+vW4LcI1ZUcmm1wg95GcxNipbp93SQ3AGO37gzmpF/KY4spAGg+bthYnfRK+nBwwKogKJPJdSs9alFnsOnQAFaagOWwUDLPMiWnuq7vJbWSXbiQAWWNWATe3eGJ8CMNS6TEsUVHo6tYDtk+p/89jZDvdHzfxxQhk0bB9Zucn9BZnIqtKHWH0D6BWAWf0EDrdB+qCVmElkHsbg+Lj1zL1MpeL9IrT9JnRdG9QCdHJ4RTU00pklPEiSDJ5ZT9bldOvesgjPQ2+L71fAoVGuzFEMcqdBC7uamYdKVgjw== daniel@dbn-cloud-server-01
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - PASSWORD=Sh3ff0rd #optional
+      - HASHED_PASSWORD= #optional
+      - SUDO_PASSWORD=Sh3ff0rd #optional
+      - SUDO_PASSWORD_HASH= #optional
+      - PROXY_DOMAIN=vscode.newbury.services #optional
+      - DEFAULT_WORKSPACE=/config/workspace/2023 #optional
+    volumes:
+      - /opt/appdata/config:/config
+    ports:
+      - 8443:8443
+    restart: unless-stopped
+
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=eyJhIjoiNzlhNTg5NTJjZDU5ZTFkMzk2YTJlZWViMDNlMDVhOGUiLCJ0IjoiMTRiYjhlMWItODJiYi00MDlkLWEzZTItODY4M2ZkMWMzNWM1IiwicyI6IllqTXpOekkyT0RRdFpUVXlaQzAwTm1ZeUxXSmpOMkV0WldJM01EVXdOelpqWmpJMCJ9
+
+

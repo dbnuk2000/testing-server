@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+   agent:
+     image: jenkins/ssh-agent:jdk11
+     privileged: true
+     user: root
+     container_name: agent
+     expose:
+       - 22
+     environment:
+       - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCGpMaHjEdV6AHIN3ev5+fFWlHrore2uDK1kP0Wgr9IyTPGmdjQzya9blg9HJJ8wp41wYw1VWXG1KX6hroIO+YbHcY2ZzpeOwxTeAyq4dpS8fpfE3Z1j4B1mZS44maLDXZohr47beb/5Rnx3cuChMcxYwNfL/SoggljF0d9UMQ18xV3w3fcnCgrAWyGczY9EhvJOevhqgcWhBEIoJrRXUcdLb9AmU7zMKOl+/W7Vgg6VBmZynsEoh9DLWoSpDbtkXmxH07ZDlhczFvOTLUFOhbr9r7Rd68h7pFVdoV8YD21Z/UzfwjfhMPBVW7wjXDnmh2ELRBMZD04R9qutFQqzDOJ8l1/FsAv0aJmh44ZVI9o/Jl9W3E8XTbsM7yNxL/LcxTHSCAfaehLso8smJm1QigOrqxFDrki6lXCAxe8iCfJIk5cYpfrCJpDkG7wtwN7rtJrcPvU9FyL0OD3uUZhpjUGTosFw5jeil91FlqgpiFErv0i+Hkz2er5ZzdRxgwKJVM= daniel@samdan-test-server
+   tunnel:
+     container_name: cloudflared-tunnel-agent
+     image: cloudflare/cloudflared
+     restart: unless-stopped
+     command: tunnel run
+     environment:
+       - TUNNEL_TOKEN=eyJhIjoiNzlhNTg5NTJjZDU5ZTFkMzk2YTJlZWViMDNlMDVhOGUiLCJ0IjoiMTRiYjhlMWItODJiYi00MDlkLWEzZTItODY4M2ZkMWMzNWM1IiwicyI6IllqTXpOekkyT0RRdFpUVXlaQzAwTm1ZeUxXSmpOMkV0WldJM01EVXdOelpqWmpJMCJ9
